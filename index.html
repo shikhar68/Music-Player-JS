@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Player</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css"
+      integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="music.css" />
+  </head>
+  <body>
+    <div class="main_div">
+      <div class="music_container">
+        <h2 id="title">Jingle Bell</h2>
+        <h3 id="artist">Honey Singh</h3>
+
+        <div class="img_container">
+          <img
+            src="images/144700-jingle-bell-yo-yo-honey-singh-mp3-song-300.jpg"
+          />
+        </div>
+        <audio
+          src="https://github.com/shikhar68/songs_playlist/raw/main/song-1-Jingle-Bell.mp3"
+        ></audio>
+
+        <!-- Progress bar -->
+
+        <div class="progressbar_container" id="progress_container">
+          <div class="progress_duration_meter">
+            <div id="current_time">0:00</div>
+            <div id="duration">3.16</div>
+          </div>
+          <div class="progress_div" id="progress_div">
+            <div class="progress" id="progress"></div>
+          </div>
+        </div>
+
+        <!-- controls -->
+        <div class="music_controls">
+          <i class="fa-solid fa-backward" id="prev" title="Previous"></i>
+          <i class="fa-solid fa-play main_button" id="play" title="Play"></i>
+          <i class="fa-solid fa-forward" id="next" title="Next"></i>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const img = document.querySelector("img");
+    const music = document.querySelector("audio");
+    const mainBtn = document.getElementById("play");
+
+    const artist = document.getElementById("artist");
+    const title = document.getElementById("title");
+    const next = document.getElementById("next");
+    const prev = document.getElementById("prev");
+
+    const progress_div = document.getElementById("progress_div");
+
+    let total_duration = document.getElementById("duration");
+
+    let current_time = document.getElementById("current_time");
+
+    let progress = document.getElementById("progress");
+
+    //Play function
+    let isPlaying = false;
+
+    const playMusic = () => {
+      isPlaying = true;
+      music.play();
+      img.classList.add("anime");
+      play.classList.replace("fa-play", "fa-pause");
+    };
+
+    //Pause function
+    const pauseMusic = () => {
+      isPlaying = false;
+      music.pause();
+      img.classList.remove("anime");
+      play.classList.replace("fa-pause", "fa-play");
+    };
+
+    mainBtn.addEventListener("click", () => {
+      // if (value) {
+      //   pauseMusic();
+      // } else {
+      //   playMusic();
+      // }
+      isPlaying ? pauseMusic() : playMusic();
+    });
+
+    //changing the details on changing songs
+
+    const arr = [
+      {
+        name: "Honey Singh",
+        title: "Jingle Bell",
+        music:
+          "https://github.com/shikhar68/songs_playlist/raw/main/song-1-Jingle-Bell.mp3",
+        image: "images/144700-jingle-bell-yo-yo-honey-singh-mp3-song-300.jpg",
+      },
+      {
+        name: "Alan Walker",
+        title: "Faded",
+        music:
+          "https://github.com/shikhar68/songs_playlist/raw/main/song-2-Faded.mp3",
+        image: "images/1716_4.jpg",
+      },
+      {
+        name: "Diljit",
+        title: "Born to shine",
+        music:
+          "https://github.com/shikhar68/songs_playlist/raw/main/song-3-Born-To-Shine.mp3",
+        image: "images/thumb-goat-2020-diljit-dosanjh-mp3-songs-300.jpg",
+      },
+    ];
+
+    //apply next and prev songs
+    arrIndex = 0;
+
+    next.addEventListener("click", () => {
+      arrIndex = (arrIndex + 1) % arr.length;
+      //console.log(arr[arrIndex]); To get the next first song after list over
+      title.textContent = arr[arrIndex].title;
+      artist.textContent = arr[arrIndex].name;
+      music.src = arr[arrIndex].music;
+      img.src = arr[arrIndex].image;
+
+      playMusic();
+    });
+
+    prev.addEventListener("click", () => {
+      arrIndex = (arrIndex - 1 + arr.length) % arr.length;
+      // console.log(arr[arrIndex]); To get the prev last song , when list start
+      title.textContent = arr[arrIndex].title;
+      artist.textContent = arr[arrIndex].name;
+      music.src = arr[arrIndex].music;
+      img.src = arr[arrIndex].image;
+
+      playMusic();
+    });
+
+    //progress bar width% inc. using timeupdate event---------------------------
+
+    music.addEventListener("timeupdate", (x) => {
+      //console.log(x);
+      const { currentTime, duration } = x.srcElement;
+      // console.log(currentTime);
+
+      let progress_time = (currentTime / duration) * 100;
+      progress.style.width = `${progress_time}%`;
+
+      //music duration update
+      let min_duration = Math.floor(duration / 60);
+      let sec_duration = Math.floor(duration % 60);
+      let tot_duration = `${min_duration}:${sec_duration}`;
+
+      if (duration) {
+        // on changing song duration time come before that 1.e if ()
+        total_duration.textContent = `${tot_duration}`; //  music change duration on html
+      }
+
+      //music current time update
+      let min_currentTime = Math.floor(currentTime / 60);
+      let sec_currentTime = Math.floor(currentTime % 60);
+
+      if (sec_currentTime < 10) {
+        sec_currentTime = `0${sec_currentTime}`;
+      }
+
+      let tot_currentTime = `${min_currentTime}:${sec_currentTime}`;
+      current_time.textContent = `${tot_currentTime}`;
+    });
+
+    //progress on click function------------------------------------------------------------
+    progress_div.addEventListener("click", (event) => {
+      console.log(event); // get offsetX and  clientWidth from  eventobject
+
+      const { duration } = music;
+      // const duretion = music.duretion
+      let move_progress =
+        (event.offsetX / event.srcElement.clientWidth) * duration;
+
+      music.currentTime = move_progress;
+    });
+
+    // when music stop than play again function
+    music.addEventListener("ended", playMusic);
+  </script>
+</html>

@@ -47,6 +47,20 @@
           <i class="fa-solid fa-play main_button" id="play" title="Play"></i>
           <i class="fa-solid fa-forward" id="next" title="Next"></i>
         </div>
+        <!-- Volume-->
+
+        <div class="slider_container">
+          <i class="fa fa-volume-down"></i>
+          <input
+            type="range"
+            min="1"
+            max="100"
+            value="51"
+            class="volume_slider"
+            onchange="setVolume()"
+          />
+          <i class="fa fa-volume-up"></i>
+        </div>
       </div>
     </div>
   </body>
@@ -68,15 +82,25 @@
     let current_time = document.getElementById("current_time");
 
     let progress = document.getElementById("progress");
+    let bg = document.getElementsByClassName("main_div");
 
+    //volume
+    let volume_slider = document.querySelector(".volume_slider");
+
+    function setVolume() {
+      music.volume = volume_slider.value / 100;
+    }
     //Play function
     let isPlaying = false;
+    bg.background = random_bg_color();
+    console.log(bg);
 
     const playMusic = () => {
       isPlaying = true;
       music.play();
       img.classList.add("anime");
       play.classList.replace("fa-play", "fa-pause");
+      random_bg_color();
     };
 
     //Pause function
@@ -85,6 +109,7 @@
       music.pause();
       img.classList.remove("anime");
       play.classList.replace("fa-pause", "fa-play");
+      random_bg_color();
     };
 
     mainBtn.addEventListener("click", () => {
@@ -193,5 +218,58 @@
 
     // when music stop than play again function
     music.addEventListener("ended", playMusic);
+
+    //BG css
+    function random_bg_color() {
+      let hex = [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f",
+        "g",
+        "h",
+      ];
+      let a;
+
+      function populate(a) {
+        for (let i = 0; i < 6; i++) {
+          let x = Math.round(Math.random() * 14);
+          let y = hex[x];
+          a += y;
+        }
+        return a;
+      }
+      let Color1 = populate("#");
+      let Color2 = populate("#");
+      let Color3 = populate("#");
+      let Color4 = populate("#");
+      var angle = "to right";
+
+      let gradient =
+        "linear-gradient(" +
+        angle +
+        "," +
+        Color1 +
+        ", " +
+        Color2 +
+        ", " +
+        Color3 +
+        ", " +
+        Color4 +
+        ")";
+      document.body.style.background = gradient;
+    }
   </script>
 </html>
